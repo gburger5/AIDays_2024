@@ -2,8 +2,6 @@ require('dotenv').config()
 const { WatsonXAI } = require('@ibm-cloud/watsonx-ai');
 
 
-process.env.IBM_CREDENTIALS_FILE = './Watson.env'; 
-
 const watsonxAIService = WatsonXAI.newInstance({
     version: '2024-10-26',
     serviceUrl: 'https://us-south.ml.cloud.ibm.com',
@@ -21,13 +19,8 @@ const params = {
 };
 
 const textGeneration = async () => {
-    console.log('hey')
-    // const output = await watsonxAIService.generateText(params)
-    // console.log(output)
+    const output = await watsonxAIService.generateText(params)
+    console.log(output.result.results[0].generated_text)
 }
 
-function test() {
-    console.log('h')
-}
-test()
 textGeneration();
