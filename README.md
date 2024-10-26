@@ -1,5 +1,8 @@
 # Run frontend
+1. Create .env file in root directory
+    * Windows: `copy .env.example .env`, then fill in your Google Maps API Key
+    * Mac: `cp .env.example .env`, then fill in your Google Maps API Key
 1. `cd frontend`
-2. `npm install`
-3. Download **Expo Go** for mobile
-3. `npx expo start -c` and scan the QR code
+1. `npm install`
+1. Download **Expo Go** for mobile
+1. `npx expo start -c` and scan the QR code
