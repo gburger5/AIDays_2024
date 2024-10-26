@@ -1,10 +1,11 @@
-import { Text, StyleSheet, View, Pressable } from "react-native";
+import { Text, StyleSheet, View, Pressable, TouchableOpacity, Image } from "react-native";
 import ImageCapture from "@/components/ImageCapture";
 import * as ImagePicker from "expo-image-picker"
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import MapView from 'react-native-maps';
-import { useRouter } from "expo-router";
+import MapView, { Callout, Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
+import { useNavigation, useRouter } from "expo-router";
+import { markers } from "../assets/dummyMarkers";
 
 // This line is needed in order to upload an image to the backend
 const FormData = global.FormData
@@ -80,6 +81,30 @@ export default function Index() {
     }
   }
 
+  const mapRef = useRef<any>(null);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={focusMap}>
+          <View style={{ padding: 10 }}>
+            <Text>Focus</Text>
+          </View>
+        </TouchableOpacity>
+      )
+    });
+  }, []);
+
+  const focusMap = () => {
+    mapRef.current?.animateToRegion({
+      latitude: 29.6516,
+      longitude: -82.3248,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    });
+  }
+
   return (
     <View
       style={{
@@ -88,13 +113,46 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <MapView style={styles.map} />
+      <MapView
+        style={styles.map}
+        provider={PROVIDER_GOOGLE}
+        initialRegion={{
+          latitude: 29.6516,
+          longitude: -82.3248,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+        showsUserLocation={true}
+        showsMyLocationButton={true}
+        ref={mapRef}
+        onRegionChangeComplete={(region) => console.log(region)}
+      >
+        {markers.map((marker, index) => (
+          <Marker
+            key={index}
+            coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
+            title={marker.name}
+          >
+            <Callout>
+              <Text>{marker.name}</Text>
+              <Text>{marker.description}</Text>
+              {marker.photos.map((photo, index) => (
+                <Image
+                  key={index}
+                  source={{ uri: photo }}
+                  style={{ width: 100, height: 100, marginVertical: 5 }}
+                />
+              ))}
+            </Callout>
+          </Marker>
+        ))}
+      </MapView>
 
       <View style={styles.contentContainer}>
-        <Text>Hola! This is the beginning of the project.</Text>
+        {/* <Text>Hola! This is the beginning of the project.</Text> */}
 
         {/* Image Capture Component */}
-        <ImageCapture onButtonPress={uploadImage} uri={image} />
+        {/* <ImageCapture onButtonPress={uploadImage} uri={image} /> */}
 
         {/* Report Button */}
         <Pressable 
@@ -102,7 +160,10 @@ export default function Index() {
             backgroundColor: "#007AFF",
             padding: 15,
             borderRadius: 10,
-            alignItems: "center",
+            // alignItems: "center",
+            position: 'absolute',
+            right: 20,
+            bottom: 20,
             marginTop: 20,
           }}
           onPress={() => router.push("/report")}
