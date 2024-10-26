@@ -1,4 +1,5 @@
-{
+import 'dotenv/config';
+export default {
   "expo": {
     "name": "frontend",
     "slug": "frontend",
@@ -13,9 +14,17 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "config": {
+        "googleMapsApiKey": process.env.GOOGLE_MAPS_API_KEY
+      }
     },
     "android": {
+      "config": {
+        "googleMaps": {
+          "apiKey": process.env.GOOGLE_MAPS_API_KEY
+      }
+    },
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -34,3 +43,4 @@
     }
   }
 }
+
