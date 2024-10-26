@@ -1,14 +1,16 @@
-import { Text, StyleSheet, View } from "react-native";
+import { Text, StyleSheet, View, Pressable } from "react-native";
 import ImageCapture from "@/components/ImageCapture";
 import * as ImagePicker from "expo-image-picker"
 import { useState } from "react";
 import axios from "axios";
 import MapView from 'react-native-maps';
+import { useRouter } from "expo-router";
 
 // This line is needed in order to upload an image to the backend
 const FormData = global.FormData
 
 export default function Index() {
+  const router = useRouter();
   const [image, setImage] = useState('')
 
   // this is a skeleton function that sends the image to the backend
@@ -88,12 +90,26 @@ export default function Index() {
     >
       <MapView style={styles.map} />
 
-      <Text>Hola! This is the beginning of the project.</Text>
+      <View style={styles.contentContainer}>
+        <Text>Hola! This is the beginning of the project.</Text>
 
-      {/* To use the image capture module, import it like this */}
-      {/* There may be a warning saying source.uri should not be empty. I was too lazy to fix it, but it doesn't break anything. */}
-      {/* You can move the functions i commented above to be more modular. */}
-      <ImageCapture onButtonPress={uploadImage} uri={image} ></ImageCapture>
+        {/* Image Capture Component */}
+        <ImageCapture onButtonPress={uploadImage} uri={image} />
+
+        {/* Report Button */}
+        <Pressable 
+          style={{
+            backgroundColor: "#007AFF",
+            padding: 15,
+            borderRadius: 10,
+            alignItems: "center",
+            marginTop: 20,
+          }}
+          onPress={() => router.push("/report")}
+        >
+          <Text style={{ color: "#fff", fontSize: 16, fontWeight: "600" }}>Create Report</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -105,5 +121,13 @@ const styles = StyleSheet.create({
   map: {
     width: '100%',
     height: '100%',
+    position: 'absolute',
   },
+  contentContainer: {
+    position: 'absolute',
+    bottom: 40,
+    width: '100%',
+    alignItems: 'center',
+    padding: 20,
+  }
 });
