@@ -115,7 +115,6 @@ export default function Index() {
     >
       <MapView
         style={styles.map}
-        provider={PROVIDER_GOOGLE}
         initialRegion={{
           latitude: 29.6516,
           longitude: -82.3248,
