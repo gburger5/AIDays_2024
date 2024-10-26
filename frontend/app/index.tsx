@@ -3,7 +3,7 @@ import ImageCapture from "@/components/ImageCapture";
 import * as ImagePicker from "expo-image-picker"
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import MapView, { Callout, Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
+import MapView, { Callout, Marker, PROVIDER_GOOGLE, Region, PROVIDER_DEFAULT} from 'react-native-maps';
 import { useNavigation, useRouter } from "expo-router";
 import { markers } from "../assets/dummyMarkers";
 
@@ -115,7 +115,7 @@ export default function Index() {
     >
       <MapView
         style={styles.map}
-        provider={PROVIDER_GOOGLE}
+        provider={PROVIDER_DEFAULT}
         initialRegion={{
           latitude: 29.6516,
           longitude: -82.3248,
