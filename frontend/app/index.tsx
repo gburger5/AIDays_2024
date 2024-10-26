@@ -29,8 +29,8 @@ export default function Index() {
           return formData
         }
       }
-
-      // when api is specified uncomment this line
+      
+      
       // await axios.post("http://api-url-goes-here", formData, config)
       alert("success")
     } catch (error) {
