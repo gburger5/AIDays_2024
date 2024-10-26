@@ -1,8 +1,9 @@
-import { Text, View } from "react-native";
+import { Text, StyleSheet, View } from "react-native";
 import ImageCapture from "@/components/ImageCapture";
 import * as ImagePicker from "expo-image-picker"
 import { useState } from "react";
 import axios from "axios";
+import MapView from 'react-native-maps';
 
 // This line is needed in order to upload an image to the backend
 const FormData = global.FormData
@@ -85,6 +86,8 @@ export default function Index() {
         alignItems: "center",
       }}
     >
+      <MapView style={styles.map} />
+
       <Text>Hola! This is the beginning of the project.</Text>
 
       {/* To use the image capture module, import it like this */}
@@ -94,3 +97,13 @@ export default function Index() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  map: {
+    width: '100%',
+    height: '100%',
+  },
+});
