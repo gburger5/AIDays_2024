@@ -12,75 +12,6 @@ const FormData = global.FormData
 
 export default function Index() {
   const router = useRouter();
-  const [image, setImage] = useState('')
-
-  // this is a skeleton function that sends the image to the backend
-  const sendToBackend = async () => {
-    try {
-      const formData: FormData = new FormData();
-
-      formData.append("image", {
-        uri: image,
-        type: "image/png",
-        name: "map-image",
-      } as any)
-
-      const config = {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        },
-        transformRequest: () => {
-          return formData
-        }
-      }
-
-      // when api is specified uncomment this line
-      // await axios.post("http://api-url-goes-here", formData, config)
-      alert("success")
-    } catch (error) {
-      
-    }
-  }
-
-  // this just saves the image uri to useState hook
-  const saveImage = async (image: string) => {
-    try {
-      setImage(image)
-
-      // make api call to backend
-    } catch (error) {
-      throw error; 
-    }
-  }
-
-  // for now, this takes a picture and saves uri to image
-  const uploadImage = async () => {
-    try {
-      // get user permission to use camera first
-      await ImagePicker.requestCameraPermissionsAsync();
-
-      // if successful, launch the BACK camera
-      let result = await ImagePicker.launchCameraAsync({
-        cameraType: ImagePicker.CameraType.back,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 1
-      })
-
-      if (!result.canceled) {
-        // this is just a string that represents the path to the saved image file (called uri)
-        await saveImage(result.assets[0].uri);
-      }
-
-    } catch (error) {
-      if (error instanceof Error) {
-        alert("Error uploading image: " + error.message);
-      } else {
-        alert("Error uploading image");
-      }
-    }
-  }
-
   const mapRef = useRef<any>(null);
   const navigation = useNavigation();
 
@@ -104,6 +35,27 @@ export default function Index() {
       longitudeDelta: 0.0421,
     });
   }
+
+  // first load, can also use on reload
+  const loadMarkers = async () => {
+    try {
+      const response = await axios.get("http://10.136.200.191:3000/api/images/34287")
+      const markerstwo = response.data.images.map((image) => ({
+        id: image._id,
+        createdAt: image.createdAt,
+        description: image.description,
+        endDate: image.endDate,
+        imageUrl: image.imageUrl,
+        zipCode: image.zipCode,
+      }));
+
+      console.log(markerstwo);
+    } catch (error) {
+      alert(error)
+    }
+  }
+
+  loadMarkers()
 
   return (
     <View
@@ -148,11 +100,6 @@ export default function Index() {
       </MapView>
 
       <View style={styles.contentContainer}>
-        {/* <Text>Hola! This is the beginning of the project.</Text> */}
-
-        {/* Image Capture Component */}
-        {/* <ImageCapture onButtonPress={uploadImage} uri={image} /> */}
-
         {/* Report Button */}
         <Pressable 
           style={{
