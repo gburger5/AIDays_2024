@@ -1,13 +1,6 @@
-import { StyleSheet, View, Text, Image, Pressable, ViewStyle } from 'react-native';
-import Animated, { 
-  useAnimatedStyle, 
-  withSpring, 
-  withSequence,
-  runOnJS,
-} from 'react-native-reanimated';
+import { StyleSheet, View, Text, Image, Pressable } from 'react-native';
 import { MapPin, Camera } from 'lucide-react-native';
 
-// Update props type to accept a simple navigation function
 type WelcomeScreenProps = {
   navigation: (route: 'explore' | 'share') => void;
 };
@@ -19,41 +12,17 @@ type NavButtonProps = {
 };
 
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
-  const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
   const NavButton: React.FC<NavButtonProps> = ({ icon: Icon, label, onPress }) => {
-    const animatedStyle = useAnimatedStyle(() => {
-      return {
-        transform: [{ scale: withSpring(1) }],
-      } as ViewStyle;
-    });
-
-    const handlePress = () => {
-      animatedStyle.transform = [
-        { 
-          scale: withSequence(
-            withSpring(0.9),
-            withSpring(1.1),
-            withSpring(1, {}, (finished) => {
-              if (finished) {
-                runOnJS(onPress)();
-              }
-            })
-          ) 
-        }
-      ];
-    };
-
     return (
-      <AnimatedPressable
-        style={[styles.navItem, animatedStyle]}
-        onPress={handlePress}
+      <Pressable
+        style={styles.navItem}
+        onPress={onPress}
       >
         <View style={styles.iconContainer}>
           <Icon size={24} color="white" />
         </View>
         <Text style={styles.navLabel}>{label}</Text>
-      </AnimatedPressable>
+      </Pressable>
     );
   };
 

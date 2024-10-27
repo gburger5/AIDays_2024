@@ -2,26 +2,33 @@ import { Stack } from "expo-router";
 
 export default function RootLayout() {
   return (
-    <Stack screenOptions={{ headerShown: false }}>
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        animation: 'slide_from_right', // Add animation
+      }}
+    >
       <Stack.Screen 
         name="index" 
         options={{
-          // Hide header for welcome screen
           headerShown: false,
         }} 
       />
       <Stack.Screen 
         name="home" 
         options={{
+          headerShown: true,
           title: "Home",
-          // Prevent going back to welcome screen
-          headerBackVisible: false,
+          headerBackVisible: true, // Enable back button
+          gestureEnabled: true, // Enable swipe back gesture
         }} 
       />
       <Stack.Screen 
         name="report" 
         options={{
-          title: "Create Report"
+          headerShown: true,
+          title: "Create Report",
+          animation: 'slide_from_right',
         }} 
       />
     </Stack>
