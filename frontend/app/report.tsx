@@ -1,6 +1,7 @@
 import { Text, StyleSheet, View, Pressable, TextInput, Image, TouchableOpacity, Platform, Keyboard, ScrollView, Modal } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import * as Location from "expo-location";
 import { useRouter } from "expo-router";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import axios from "axios";
@@ -12,16 +13,17 @@ export default function ReportForm() {
   const [image, setImage] = useState('');
   const [date, setDate] = useState(new Date());
   const [showModal, setShowModal] = useState(false);
-  const [currentPicker, setCurrentPicker] = useState<'date' | 'time'>(null);
+  const [currentPicker, setCurrentPicker] = useState<'date' | 'time' | undefined>(undefined);
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
+  const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
 
   const showPicker = (type: 'date' | 'time') => {
     setCurrentPicker(type);
     setShowModal(true);
   };
 
-  const handleChange = (event: any, selectedValue?: Date) => {
+  const handleDateTimeChange = (event: any, selectedValue?: Date) => {
     if (selectedValue) {
       const newDate = new Date(date);
       
@@ -46,6 +48,22 @@ export default function ReportForm() {
     });
   };
 
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('Permission to access location was denied');
+        return;
+      }
+
+      let { coords } = await Location.getCurrentPositionAsync({});
+      setLocation({
+        latitude: coords.latitude,
+        longitude: coords.longitude,
+      });
+    })();
+  }, []);
+
   const sendToBackend = async () => {
     if (!description.trim()) {
       alert("Please provide a description before submitting.");
@@ -55,6 +73,12 @@ export default function ReportForm() {
       alert("Please capture an image before submitting.");
       return;
     }
+    
+    if (location) {
+      console.log(`Latitude: ${location.latitude}, Longitude: ${location.longitude}`);
+    } else {
+      console.log("Location not available");
+    }
 
     try {
       const formData: FormData = new FormData();
@@ -63,9 +87,11 @@ export default function ReportForm() {
         type: "image/png",
         name: "report-image",
       } as any);
-
       formData.append("description", description);
       formData.append("expiration", date.toISOString());
+      formData.append("latitude", location?.latitude.toString() || '');
+      formData.append("longitude", location?.longitude.toString() || '');
+      console.log(formData);
 
       const config = {
         headers: {
@@ -80,6 +106,7 @@ export default function ReportForm() {
       );
       console.log(response)
       alert("Report successfully created!");
+
       router.back();
     } catch (error) {
       alert("Error submitting report. Please try again.");
@@ -111,7 +138,7 @@ export default function ReportForm() {
   return (
     <View style={styles.container}>
       {/* Header */}
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <TouchableOpacity 
           onPress={() => router.back()} 
           style={styles.backButton}
@@ -132,7 +159,7 @@ export default function ReportForm() {
             <Text style={styles.doneButtonText}>Done</Text>
           </TouchableOpacity>
         )}
-      </View>
+      </View> */}
 
       {/* Content */}
       <ScrollView 
@@ -159,7 +186,7 @@ export default function ReportForm() {
 
         {/* DateTime Section */}
         <View style={styles.dateTimeContainer}>
-          <Text style={styles.label}>Expiration</Text>
+          <Text style={styles.label}>Relevant Until *</Text>
           <View style={styles.dateTimeRow}>
             <TouchableOpacity 
               style={styles.dateTimeButton} 
@@ -185,7 +212,7 @@ export default function ReportForm() {
 
         {/* Image Section */}
         <View style={styles.imageSection}>
-          <Text style={styles.label}>Photo *</Text>
+          <Text style={styles.label}>Attach Photo *</Text>
           {image ? (
             <View style={styles.imageContainer}>
               <Image source={{ uri: image }} style={styles.imagePreview} />
@@ -239,7 +266,7 @@ export default function ReportForm() {
               value={date}
               mode={currentPicker}
               display="spinner"
-              onChange={handleChange}
+              onChange={handleDateTimeChange}
               minimumDate={currentPicker === 'date' ? new Date() : undefined}
               textColor="#000"
             />
