@@ -6,8 +6,6 @@ const titleComparison = async (req, res, next) => {
     try {
       // incoming data
       const { latitude, longitude } = req.body;
-      console.log("Latitude:", latitude, "Type:", typeof latitude);
-        console.log("Longitude:", longitude, "Type:", typeof longitude);
 
       const givenTitles = await findMatchingCoordinates(longitude, latitude);
 
