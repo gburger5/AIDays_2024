@@ -1,19 +1,19 @@
 import { Text, StyleSheet, View, Pressable, TouchableOpacity, Image } from "react-native";
-import ImageCapture from "@/components/ImageCapture";
-import * as ImagePicker from "expo-image-picker"
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import MapView, { Callout, Marker, PROVIDER_GOOGLE, Region, PROVIDER_DEFAULT} from 'react-native-maps';
+import MapView, { Callout, Marker, Region } from 'react-native-maps';
 import { useNavigation, useRouter } from "expo-router";
 import { markers } from "../assets/dummyMarkers";
 import * as Location from "expo-location";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
-
-// This line is needed in order to upload an image to the backend
-const FormData = global.FormData
 
 export default function Index() {
   const router = useRouter();
+  const [location, setLocation] = useState<Region>({
+    latitude: 29.6516,
+    longitude: -82.3248,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
   const mapRef = useRef<any>(null);
   const navigation = useNavigation();
 
@@ -51,14 +51,14 @@ export default function Index() {
     if (location) {
       mapRef.current?.animateToRegion(location);
     }
-    else {
-      mapRef.current?.animateToRegion({
-        latitude: 29.6516,
-        longitude: -82.3248,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      });
-    }
+    // else {
+    //   mapRef.current?.animateToRegion({
+    //     latitude: 29.6516,
+    //     longitude: -82.3248,
+    //     latitudeDelta: 0.0922,
+    //     longitudeDelta: 0.0421,
+    //   });
+    // }
   }
 
   // first load, can also use on reload
@@ -73,8 +73,7 @@ export default function Index() {
         imageUrl: image.imageUrl,
         zipCode: image.zipCode,
       }));
-
-      console.log(markerstwo);
+      // console.log(markerstwo);
     } catch (error) {
       alert(error)
     }
@@ -90,13 +89,15 @@ export default function Index() {
         alignItems: "center",
       }}
     >
+
+      {/* Map */}
       <MapView
         style={styles.map}
         initialRegion={location}
         showsUserLocation
         showsMyLocationButton
         ref={mapRef}
-        onRegionChangeComplete={(region) => console.log(region)}
+        // onRegionChangeComplete={(region) => console.log(region)}
       >
         {markers.map((marker, index) => (
           <Marker
@@ -119,8 +120,8 @@ export default function Index() {
         ))}
       </MapView>
 
+      {/* Report Button */}
       <View style={styles.contentContainer}>
-        {/* Report Button */}
         <Pressable 
           style={{
             backgroundColor: "#007AFF",
@@ -137,6 +138,7 @@ export default function Index() {
           <Text style={{ color: "#fff", fontSize: 16, fontWeight: "600" }}>Create Report</Text>
         </Pressable>
       </View>
+
     </View>
   );
 }
