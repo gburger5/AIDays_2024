@@ -3,6 +3,7 @@ import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import axios from "axios";
 
 const FormData = global.FormData;
 
@@ -62,18 +63,22 @@ export default function ReportForm() {
         type: "image/png",
         name: "report-image",
       } as any);
+
       formData.append("description", description);
       formData.append("expiration", date.toISOString());
 
       const config = {
         headers: {
-          "Content-Type": "multipart/form-data"
+          "Content-Type": "multipart/form-data",
         },
-        transformRequest: () => {
-          return formData;
-        }
       };
 
+      const response = await axios.post(
+        "http://10.136.200.191:3000/api/image",
+        formData,
+        config
+      );
+      console.log(response)
       alert("Report successfully created!");
       router.back();
     } catch (error) {
