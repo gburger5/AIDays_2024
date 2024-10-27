@@ -11,6 +11,17 @@ import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 // This line is needed in order to upload an image to the backend
 const FormData = global.FormData
 
+type CoordImage = {
+  _id: string;
+  createdAt: string;
+  description: string;
+  endDate: string;
+  imageUrl: string;
+  zipCode: string;
+  latitude: number;
+  longitude: number;
+};
+
 export default function Index() {
   const router = useRouter();
   const [location, setLocation] = useState<Region>({
@@ -21,7 +32,8 @@ export default function Index() {
   });
   const mapRef = useRef<any>(null);
   const navigation = useNavigation();
-  const [markers, setMarkers] = useState([]);
+  const [markers, setMarkers] = useState<CoordImage[]>([]);
+   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadMarkers = async () => {
@@ -29,7 +41,7 @@ export default function Index() {
         const response = await axios.get(
           "http://10.136.200.191:3000/api/images/34287"
         );
-        const loadedMarkers = response.data.images.map((image) => ({
+        const loadedMarkers: CoordImage[] = response.data.images.map((image: CoordImage) => ({
           id: image._id,
           createdAt: image.createdAt,
           description: image.description,
@@ -43,11 +55,14 @@ export default function Index() {
         setMarkers(loadedMarkers);
       } catch (error) {
         alert(error);
+      } finally {
+        setLoading(false);
       }
     };
 
     loadMarkers();
   }, []);
+      
 
   useEffect(() => {
     (async () => {
@@ -93,6 +108,14 @@ export default function Index() {
     // }
   }
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Loading map...</Text>
+      </View>
+    );
+  }
+
   return (
     <View
       style={{
@@ -118,18 +141,17 @@ export default function Index() {
               latitude: marker.latitude,
               longitude: marker.longitude,
             }}
-            title={marker.name}
+            title="A marker"
           >
             <Callout>
-              <Text>{marker.name}</Text>
               <Text>{marker.description}</Text>
-              {marker.photos.map((photo, index) => (
+              {/* {marker.photos.map((photo, index) => (
                 <Image
                   key={index}
                   source={{ uri: photo }}
                   style={{ width: 100, height: 100, marginVertical: 5 }}
                 />
-              ))}
+              ))} */}
             </Callout>
           </Marker>
         ))}
@@ -162,6 +184,11 @@ export default function Index() {
 }
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     flex: 1,
   },
