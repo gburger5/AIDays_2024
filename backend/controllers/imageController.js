@@ -9,11 +9,13 @@ async function uploadImage(req, res, next) {
   try {
     const url = req.fileUpload.imageURL;
     // add zip code and category, and endDate, change endDate in model
-    const { description, expiration } = req.body;
+    const { description, expiration, latitude, longitude } = req.body;
     const image = await Image.create({
       endDate: expiration,
       imageUrl: url,
       description: description,
+      longitude: longitude,
+      latitude: latitude
     });
     res.status(200).json({ image });
   } catch (error) {

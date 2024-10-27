@@ -1,27 +1,67 @@
-import { Text, StyleSheet, View, Pressable, TouchableOpacity, Image } from "react-native";
+import {
+  Text,
+  StyleSheet,
+  View,
+  Pressable,
+  TouchableOpacity,
+  Image,
+} from "react-native";
 import ImageCapture from "@/components/ImageCapture";
-import * as ImagePicker from "expo-image-picker"
+import * as ImagePicker from "expo-image-picker";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import MapView, { Callout, Marker, PROVIDER_GOOGLE, Region, PROVIDER_DEFAULT} from 'react-native-maps';
+import MapView, {
+  Callout,
+  Marker,
+  PROVIDER_GOOGLE,
+  Region,
+  PROVIDER_DEFAULT,
+} from "react-native-maps";
 import { useNavigation, useRouter } from "expo-router";
-import { markers } from "../assets/dummyMarkers";
 import * as Location from "expo-location";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 // This line is needed in order to upload an image to the backend
-const FormData = global.FormData
+const FormData = global.FormData;
 
 export default function Index() {
   const router = useRouter();
   const mapRef = useRef<any>(null);
   const navigation = useNavigation();
+  const [location, setLocation] = useState();
+  const [markers, setMarkers] = useState([]);
+
+  useEffect(() => {
+    const loadMarkers = async () => {
+      try {
+        const response = await axios.get(
+          "http://10.136.200.191:3000/api/images/34287"
+        );
+        const loadedMarkers = response.data.images.map((image) => ({
+          id: image._id,
+          createdAt: image.createdAt,
+          description: image.description,
+          endDate: image.endDate,
+          imageUrl: image.imageUrl,
+          zipCode: image.zipCode,
+          latitude: image.latitude,
+          longitude: image.longitude,
+        }));
+
+        setMarkers(loadedMarkers);
+      } catch (error) {
+        alert(error);
+      }
+    };
+
+    loadMarkers();
+  }, []);
 
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        console.log('Permission to access location was denied');
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
         return;
       }
 
@@ -43,15 +83,14 @@ export default function Index() {
             <Text>Focus</Text>
           </View>
         </TouchableOpacity>
-      )
+      ),
     });
   }, [location]);
 
   const focusMap = () => {
     if (location) {
       mapRef.current?.animateToRegion(location);
-    }
-    else {
+    } else {
       mapRef.current?.animateToRegion({
         latitude: 29.6516,
         longitude: -82.3248,
@@ -59,28 +98,7 @@ export default function Index() {
         longitudeDelta: 0.0421,
       });
     }
-  }
-
-  // first load, can also use on reload
-  const loadMarkers = async () => {
-    try {
-      const response = await axios.get("http://10.136.200.191:3000/api/images/34287")
-      const markerstwo = response.data.images.map((image) => ({
-        id: image._id,
-        createdAt: image.createdAt,
-        description: image.description,
-        endDate: image.endDate,
-        imageUrl: image.imageUrl,
-        zipCode: image.zipCode,
-      }));
-
-      console.log(markerstwo);
-    } catch (error) {
-      alert(error)
-    }
-  }
-
-  loadMarkers()
+  };
 
   return (
     <View
@@ -101,7 +119,10 @@ export default function Index() {
         {markers.map((marker, index) => (
           <Marker
             key={index}
-            coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
+            coordinate={{
+              latitude: marker.latitude,
+              longitude: marker.longitude,
+            }}
             title={marker.name}
           >
             <Callout>
@@ -121,20 +142,22 @@ export default function Index() {
 
       <View style={styles.contentContainer}>
         {/* Report Button */}
-        <Pressable 
+        <Pressable
           style={{
             backgroundColor: "#007AFF",
             padding: 15,
             borderRadius: 10,
             // alignItems: "center",
-            position: 'absolute',
+            position: "absolute",
             right: 20,
             bottom: 20,
             marginTop: 20,
           }}
           onPress={() => router.push("/report")}
         >
-          <Text style={{ color: "#fff", fontSize: 16, fontWeight: "600" }}>Create Report</Text>
+          <Text style={{ color: "#fff", fontSize: 16, fontWeight: "600" }}>
+            Create Report
+          </Text>
         </Pressable>
       </View>
     </View>
@@ -146,15 +169,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   map: {
-    width: '100%',
-    height: '100%',
-    position: 'absolute',
+    width: "100%",
+    height: "100%",
+    position: "absolute",
   },
   contentContainer: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 40,
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
     padding: 20,
-  }
+  },
 });

@@ -28,6 +28,14 @@ const imageSchema = new mongoose.Schema({
     type: String,
     immutable: true,
   },
+  latitude: {
+    type: String,
+    immutable: true,
+  },
+  longitude: {
+    type: String,
+    immutable: true,
+  }
 });
 
 const giveCurrentDateTime = () => {

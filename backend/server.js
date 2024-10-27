@@ -7,7 +7,9 @@ const cors = require("cors");
 const errorHandler = require("./middlewares/errorHandler");
 
 // db connection
-mongoose.connect("mongodb://localhost/hackathon");
+mongoose.connect(
+  "mongodb+srv://hacker:hacker123@clusterhack.z7cdt.mongodb.net/?retryWrites=true&w=majority&appName=ClusterHack"
+);
 
 // necessary middleware in order to receive requests
 app.use(cors({origin: true, credentials: true}));
