@@ -104,9 +104,13 @@ export default function ReportForm() {
         formData,
         config
       );
-      console.log(response.data)
-      alert("Report successfully created!");
-
+      console.log(response.data.message)
+      
+      if (response.data.message == "Someone has inserted this point already!") {
+        alert("Someone else submitted this report already!")
+      } else {
+        alert("Report successfully created!");
+      }
       router.back();
     } catch (error) {
         const errorMessage = error.response?.data?.error || error.message || "Unknown error ";
