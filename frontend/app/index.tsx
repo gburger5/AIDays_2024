@@ -1,9 +1,7 @@
 import { Text, StyleSheet, View, Pressable, TouchableOpacity, Image } from "react-native";
-import ImageCapture from "@/components/ImageCapture";
-import * as ImagePicker from "expo-image-picker"
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import MapView, { Callout, Marker, PROVIDER_GOOGLE, Region, PROVIDER_DEFAULT} from 'react-native-maps';
+import MapView, { Callout, Marker, Region } from 'react-native-maps';
 import { useNavigation, useRouter } from "expo-router";
 import * as Location from "expo-location";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
@@ -90,7 +88,7 @@ export default function Index() {
             <Text>Focus</Text>
           </View>
         </TouchableOpacity>
-      ),
+      )
     });
   }, [location]);
 
@@ -139,11 +137,12 @@ export default function Index() {
             key={index}
             coordinate={{
               latitude: marker.latitude,
-              longitude: marker.longitude,
+              longitude: marker.longitude
             }}
             title="A marker"
           >
             <Callout>
+              {/* <Text>{marker.name}</Text> */}
               <Text>{marker.description}</Text>
               {/* {marker.photos.map((photo, index) => (
                 <Image
@@ -159,7 +158,6 @@ export default function Index() {
 
       {/* Report Button */}
       <View style={styles.contentContainer}>
-        {/* Report Button */}
         <Pressable 
           style={{
             backgroundColor: "#007AFF",
@@ -203,5 +201,5 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     padding: 20,
-  },
+  }
 });
