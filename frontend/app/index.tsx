@@ -102,13 +102,13 @@ export default function Index() {
     // }
   }
 
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Text>Loading map...</Text>
-      </View>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <View style={styles.loadingContainer}>
+  //       <Text>Loading map...</Text>
+  //     </View>
+  //   );
+  // }
 
   return (
     <View

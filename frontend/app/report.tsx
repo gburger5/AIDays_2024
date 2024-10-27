@@ -100,16 +100,18 @@ export default function ReportForm() {
       };
 
       const response = await axios.post(
-        "http://10.136.200.191:3000/api/image",
+        "http://10.136.166.68:3000/api/image",
         formData,
         config
       );
-      console.log(response)
+      console.log(response.data)
       alert("Report successfully created!");
 
       router.back();
     } catch (error) {
-      alert("Error submitting report. Please try again.");
+        const errorMessage = error.response?.data?.error || error.message || "Unknown error ";
+      console.log(errorMessage);
+      alert(errorMessage);
     }
   };
 

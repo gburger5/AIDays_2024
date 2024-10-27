@@ -6,7 +6,11 @@ const titleComparison = async (req, res, next) => {
     try {
       // incoming data
       const { latitude, longitude } = req.body;
+      console.log("Latitude:", latitude, "Type:", typeof latitude);
+        console.log("Longitude:", longitude, "Type:", typeof longitude);
+
       const givenTitles = await findMatchingCoordinates(longitude, latitude);
+
       if (givenTitles.length == 0) {
         next();
       }
@@ -47,10 +51,12 @@ const titleComparison = async (req, res, next) => {
       };
       const output = await watsonxAIService.generateText(params);
       const result = output.result.results[0].generated_text.trim().toLowerCase();
-      if (result === "true") {
+      console.log(result)
+      if (result == "true") {
         res.status(200).json({message: "Someone has inserted this point already!"})
+      } else {
+        next()
       }
-      next();
     } catch (error) {
         next(error)
     }

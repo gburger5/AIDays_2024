@@ -3,8 +3,7 @@ const { WatsonXAI } = require("@ibm-cloud/watsonx-ai");
 
 const textGeneration = async (req, res, next) => {
   try {
-    const { description } = req.body;
-
+    const { description } = req.body; // This is the problem 100%
     const watsonxAIService = WatsonXAI.newInstance({
       version: "2024-10-26",
       serviceUrl: "https://us-south.ml.cloud.ibm.com",
@@ -43,7 +42,6 @@ Output the title only, with no quotes or explanation:`,
     };
     const output = await watsonxAIService.generateText(params);
     const result = output.result.results[0].generated_text.trim();
-    console.log(result)
     req.titleFromTextGen = result;
     console.log(req.titleFromTextGen)
     next();
