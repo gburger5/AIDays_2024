@@ -4,10 +4,6 @@ import axios from "axios";
 import MapView, { Callout, Marker, Region } from 'react-native-maps';
 import { useNavigation, useRouter } from "expo-router";
 import * as Location from "expo-location";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
-
-// This line is needed in order to upload an image to the backend
-const FormData = global.FormData
 
 type CoordImage = {
   _id: string;
@@ -31,7 +27,7 @@ export default function Index() {
   const mapRef = useRef<any>(null);
   const navigation = useNavigation();
   const [markers, setMarkers] = useState<CoordImage[]>([]);
-   const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadMarkers = async () => {
