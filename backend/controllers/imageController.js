@@ -8,8 +8,10 @@ const Image = require("../models/Image");
 async function uploadImage(req, res, next) {
   try {
     const url = req.fileUpload.imageURL;
+    
     // add zip code and category, and endDate, change endDate in model
     const { description, expiration, latitude, longitude } = req.body;
+    console.log(req.titleFromTextGen)
     const image = await Image.create({
       endDate: expiration,
       imageUrl: url,
