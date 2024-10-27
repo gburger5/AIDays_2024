@@ -7,6 +7,9 @@ const imageSchema = new mongoose.Schema({
     immutable: true,
     default: '34287'
   },
+  title: {
+    type: String,
+  },
   imageUrl: {
     type: String,
     immutable: true,

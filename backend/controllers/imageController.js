@@ -15,7 +15,8 @@ async function uploadImage(req, res, next) {
       imageUrl: url,
       description: description,
       longitude: longitude,
-      latitude: latitude
+      latitude: latitude,
+      title: req.titleFromTextGen
     });
     res.status(200).json({ image });
   } catch (error) {
