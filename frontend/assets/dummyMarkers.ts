@@ -1,56 +1,57 @@
-export const markers = [
-    // 5 example Gainesville markers for testing 
+const emergencyMarkers = [
     {
-        latitude: 29.6516,
-        longitude: -82.3248,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-        name: 'University of Florida',
-        description: 'The University of Florida is a major, public, comprehensive, land-grant, research university.',
-        photos: [
-            'https://example.com/photo1.jpg',
-            'https://example.com/photo2.jpg'
-        ]
+        zipCode: "32611",
+        title: "Emergency Shelter Open",
+        description: "University of Florida's O'Connell Center converted to emergency shelter. Accepting displaced residents with capacity for 500 people.",
+        imageUrl: "https://example.com/photo1.jpg",
+        createdAt: "2024-10-27",
+        endDate: "2024-10-30",
+        category: "shelter",
+        latitude: "29.6516",
+        longitude: "-82.3248"
     },
     {
-        latitude: 29.6520,
-        longitude: -82.3430,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-        name: 'Ben Hill Griffin Stadium',
-        description: 'Ben Hill Griffin Stadium, popularly known as "The Swamp", is the football stadium for the University of Florida.',
-        photos: [
-            'https://example.com/photo3.jpg'
-        ]
+        zipCode: "32611",
+        title: "Flooding Hazard",
+        description: "Ben Hill Griffin Stadium parking lot completely flooded with 3 feet of standing water. Multiple vehicles stranded - avoid area.",
+        imageUrl: "https://example.com/photo3.jpg",
+        createdAt: "2024-10-27",
+        endDate: "2024-10-29",
+        category: "hazard",
+        latitude: "29.6520",
+        longitude: "-82.3430"
     },
     {
-        latitude: 29.6486,
-        longitude: -82.3391,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-        name: 'Harn Museum of Art',
-        description: 'The Harn Museum of Art is an art museum at the University of Florida in Gainesville, Florida.',
-        photos: []
+        zipCode: "32611",
+        title: "Missing Dog",
+        description: "Golden Retriever named Max last seen near Harn Museum during evacuation. Wearing red collar with tags.",
+        imageUrl: "",
+        createdAt: "2024-10-27",
+        endDate: "2024-11-01",
+        category: "missing_pet",
+        latitude: "29.6486",
+        longitude: "-82.3391"
     },
     {
-        latitude: 29.6436,
-        longitude: -82.3549,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-        name: 'Butterfly Rainforest',
-        description: 'The Butterfly Rainforest is a can\'t-miss living exhibit at the Florida Museum of Natural History.',
-        photos: [
-            'https://www.google.com/images/srpr/logo4w.png',
-            'https://www.google.com/images/srpr/logo4w.png'
-        ]
+        zipCode: "32611",
+        title: "Water Distribution",
+        description: "Florida Museum of Natural History parking lot serving as water distribution point. Free bottled water available from 8AM-6PM.",
+        imageUrl: "https://www.google.com/images/srpr/logo4w.png",
+        createdAt: "2024-10-27",
+        endDate: "2024-10-31",
+        category: "supplies",
+        latitude: "29.6436",
+        longitude: "-82.3549"
     },
     {
-        latitude: 29.6593,
-        longitude: -82.3232,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-        name: 'Depot Park',
-        description: 'Depot Park is a public park located in Gainesville, Florida, known for its beautiful scenery and family-friendly environment.',
-        photos: []
+        zipCode: "32601",
+        title: "Downed Power Lines",
+        description: "Multiple power lines down across Depot Park area. GRU crews en route but area is dangerous. Stay clear of the vicinity.",
+        imageUrl: "",
+        createdAt: "2024-10-27",
+        endDate: "2024-10-28",
+        category: "hazard",
+        latitude: "29.6593",
+        longitude: "-82.3232"
     }
 ];
