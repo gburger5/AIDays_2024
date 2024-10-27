@@ -1,88 +1,39 @@
 import { Text, StyleSheet, View, Pressable, TouchableOpacity, Image } from "react-native";
-import ImageCapture from "@/components/ImageCapture";
-import * as ImagePicker from "expo-image-picker"
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import MapView, { Callout, Marker, PROVIDER_GOOGLE, Region, PROVIDER_DEFAULT} from 'react-native-maps';
+import MapView, { Callout, Marker, Region } from 'react-native-maps';
 import { useNavigation, useRouter } from "expo-router";
 import { markers } from "../assets/dummyMarkers";
-
-// This line is needed in order to upload an image to the backend
-const FormData = global.FormData
+import * as Location from "expo-location";
 
 export default function Index() {
   const router = useRouter();
-  const [image, setImage] = useState('')
-
-  // this is a skeleton function that sends the image to the backend
-  const sendToBackend = async () => {
-    try {
-      const formData: FormData = new FormData();
-
-      formData.append("image", {
-        uri: image,
-        type: "image/png",
-        name: "map-image",
-      } as any)
-
-      const config = {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        },
-        transformRequest: () => {
-          return formData
-        }
-      }
-
-      // when api is specified uncomment this line
-      // await axios.post("http://api-url-goes-here", formData, config)
-      alert("success")
-    } catch (error) {
-      
-    }
-  }
-
-  // this just saves the image uri to useState hook
-  const saveImage = async (image: string) => {
-    try {
-      setImage(image)
-
-      // make api call to backend
-    } catch (error) {
-      throw error; 
-    }
-  }
-
-  // for now, this takes a picture and saves uri to image
-  const uploadImage = async () => {
-    try {
-      // get user permission to use camera first
-      await ImagePicker.requestCameraPermissionsAsync();
-
-      // if successful, launch the BACK camera
-      let result = await ImagePicker.launchCameraAsync({
-        cameraType: ImagePicker.CameraType.back,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 1
-      })
-
-      if (!result.canceled) {
-        // this is just a string that represents the path to the saved image file (called uri)
-        await saveImage(result.assets[0].uri);
-      }
-
-    } catch (error) {
-      if (error instanceof Error) {
-        alert("Error uploading image: " + error.message);
-      } else {
-        alert("Error uploading image");
-      }
-    }
-  }
-
+  const [location, setLocation] = useState<Region>({
+    latitude: 29.6516,
+    longitude: -82.3248,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
   const mapRef = useRef<any>(null);
   const navigation = useNavigation();
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('Permission to access location was denied');
+        return;
+      }
+
+      let { coords } = await Location.getCurrentPositionAsync({});
+      setLocation({
+        latitude: coords.latitude,
+        longitude: coords.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+    })();
+  }, []);
 
   useEffect(() => {
     navigation.setOptions({
@@ -94,16 +45,41 @@ export default function Index() {
         </TouchableOpacity>
       )
     });
-  }, []);
+  }, [location]);
 
   const focusMap = () => {
-    mapRef.current?.animateToRegion({
-      latitude: 29.6516,
-      longitude: -82.3248,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
-    });
+    if (location) {
+      mapRef.current?.animateToRegion(location);
+    }
+    // else {
+    //   mapRef.current?.animateToRegion({
+    //     latitude: 29.6516,
+    //     longitude: -82.3248,
+    //     latitudeDelta: 0.0922,
+    //     longitudeDelta: 0.0421,
+    //   });
+    // }
   }
+
+  // first load, can also use on reload
+  const loadMarkers = async () => {
+    try {
+      const response = await axios.get("http://10.136.200.191:3000/api/images/34287")
+      const markerstwo = response.data.images.map((image) => ({
+        id: image._id,
+        createdAt: image.createdAt,
+        description: image.description,
+        endDate: image.endDate,
+        imageUrl: image.imageUrl,
+        zipCode: image.zipCode,
+      }));
+      // console.log(markerstwo);
+    } catch (error) {
+      alert(error)
+    }
+  }
+
+  loadMarkers()
 
   return (
     <View
@@ -113,18 +89,15 @@ export default function Index() {
         alignItems: "center",
       }}
     >
+
+      {/* Map */}
       <MapView
         style={styles.map}
-        initialRegion={{
-          latitude: 29.6516,
-          longitude: -82.3248,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
-        showsUserLocation={true}
-        showsMyLocationButton={true}
+        initialRegion={location}
+        showsUserLocation
+        showsMyLocationButton
         ref={mapRef}
-        onRegionChangeComplete={(region) => console.log(region)}
+        // onRegionChangeComplete={(region) => console.log(region)}
       >
         {markers.map((marker, index) => (
           <Marker
@@ -147,13 +120,8 @@ export default function Index() {
         ))}
       </MapView>
 
+      {/* Report Button */}
       <View style={styles.contentContainer}>
-        {/* <Text>Hola! This is the beginning of the project.</Text> */}
-
-        {/* Image Capture Component */}
-        {/* <ImageCapture onButtonPress={uploadImage} uri={image} /> */}
-
-        {/* Report Button */}
         <Pressable 
           style={{
             backgroundColor: "#007AFF",
@@ -170,6 +138,7 @@ export default function Index() {
           <Text style={{ color: "#fff", fontSize: 16, fontWeight: "600" }}>Create Report</Text>
         </Pressable>
       </View>
+
     </View>
   );
 }
