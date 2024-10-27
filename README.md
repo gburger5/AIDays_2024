@@ -7,7 +7,7 @@
 1. Download **Expo Go** for mobile
 1. `npx expo start -c` and scan the QR code
 
-2. # Rescue Radar : AI DAYS 2024 Hackathon
+# Rescue Radar : AI DAYS 2024 Hackathon
 
 **Slogan:** Aid made easy
 
