@@ -23,9 +23,6 @@ Using React-Native and Expo, we created a cross-platform app for iOS and Android
 ## Challenges
 Integrating Firebase and Watson.AI during a hackathon was challenging, especially while syncing the API with our database. After overcoming errors, we built a smooth user-report pipeline.
 
-## Accomplishments
-We implemented offline functionality through data caching, ensuring users can access critical information even when internet access is limited. Balancing advanced features with disaster-specific needs was key to our success.
-
 ## What We Learned
 Our team learned how to integrate IBM’s LLM tools and manage data flow between models and our database, expanding our full-stack skills.
 
