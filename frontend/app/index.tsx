@@ -6,6 +6,8 @@ import axios from "axios";
 import MapView, { Callout, Marker, PROVIDER_GOOGLE, Region, PROVIDER_DEFAULT} from 'react-native-maps';
 import { useNavigation, useRouter } from "expo-router";
 import { markers } from "../assets/dummyMarkers";
+import * as Location from "expo-location";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 // This line is needed in order to upload an image to the backend
 const FormData = global.FormData
@@ -14,6 +16,24 @@ export default function Index() {
   const router = useRouter();
   const mapRef = useRef<any>(null);
   const navigation = useNavigation();
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('Permission to access location was denied');
+        return;
+      }
+
+      let { coords } = await Location.getCurrentPositionAsync({});
+      setLocation({
+        latitude: coords.latitude,
+        longitude: coords.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+    })();
+  }, []);
 
   useEffect(() => {
     navigation.setOptions({
@@ -25,15 +45,20 @@ export default function Index() {
         </TouchableOpacity>
       )
     });
-  }, []);
+  }, [location]);
 
   const focusMap = () => {
-    mapRef.current?.animateToRegion({
-      latitude: 29.6516,
-      longitude: -82.3248,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
-    });
+    if (location) {
+      mapRef.current?.animateToRegion(location);
+    }
+    else {
+      mapRef.current?.animateToRegion({
+        latitude: 29.6516,
+        longitude: -82.3248,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+    }
   }
 
   // first load, can also use on reload
@@ -67,14 +92,9 @@ export default function Index() {
     >
       <MapView
         style={styles.map}
-        initialRegion={{
-          latitude: 29.6516,
-          longitude: -82.3248,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
-        showsUserLocation={true}
-        showsMyLocationButton={true}
+        initialRegion={location}
+        showsUserLocation
+        showsMyLocationButton
         ref={mapRef}
         onRegionChangeComplete={(region) => console.log(region)}
       >
